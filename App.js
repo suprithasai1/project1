@@ -25,6 +25,7 @@ import AlzheimerTestScreen from './src/screens/main/AlzheimerTestScreen.js';
 import EpilepsyTestScreen from './src/screens/main/EpilepsyTestScreen.js';
 import ForgotPasswordScreen from './src/screens/auth/ForgotPasswordScreen.js';
 import SuccessScreen from './src/screens/auth/SuccessScreen.js';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //import CustomTabBar from './src/components/CustomTabBar.js';
 //import AppointmentsScreen from './src/screens/main/AppointmentsScreen.js';
