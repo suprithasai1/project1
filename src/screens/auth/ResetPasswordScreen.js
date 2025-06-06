@@ -16,41 +16,41 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetPassword, clearError } from '../../redux/slices/authSlice';
+import {  clearError } from '../../redux/slices/authSlice';
 import { COLORS } from '../../constants/theme';
 import Icon from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
-const ResetPasswordScreen = ({ navigation, route }) => {
+const ResetPasswordScreen = ({  route }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const { loading, error } = useSelector((state) => state.auth);
   const { email, token } = route.params;
 
   const handleResetPassword = async () => {
+    setFormError('');
     if (!password || !confirmPassword) {
-      Alert.alert('Error', 'Please fill in all fields');
+      setFormError('Please fill in all fields');
       return;
     }
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      setFormError('Passwords do not match');
       return;
     }
-    if (password.length < 8) {
-      Alert.alert('Error', 'Password must be at least 8 characters long');
+    if (password.length < 6) {
+      setFormError('Password must be at least 6 characters long');
       return;
     }
-    // Mock success for testing
-    Alert.alert(
-      'Success',
-      'Your password has been reset successfully',
-      [{ text: 'OK', onPress: () => navigation.navigate('SuccessScreen') }]
-    );
+    // Navigate directly to SuccessScreen
+    navigation.navigate('SuccessScreen');
   };
 
   const handleBack = () => {
@@ -133,6 +133,12 @@ const ResetPasswordScreen = ({ navigation, route }) => {
               </View>
             </View>
 
+            {formError ? (
+              <Text style={styles.formErrorText}>
+                {formError}
+              </Text>
+            ) : null}
+
             <TouchableOpacity
               style={styles.resetButton}
               onPress={handleResetPassword}
@@ -147,10 +153,7 @@ const ResetPasswordScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.backContainer} onPress={handleBack}>
-            {/* <Icon name="chevron-left" size={18} color={COLORS.textLight} />
-            <Text style={styles.backText}>Back</Text> */}
-          </TouchableOpacity>
+          {/* Remove unused bottom back button for clarity */}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -165,7 +168,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    
   },
   navigationBar: {
     flexDirection: 'row',
@@ -186,18 +188,21 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingHorizontal: 20,
-    paddingBottom: 30,
+    paddingBottom: 20,
     justifyContent: 'center',
   },
    logoContainer: {
       alignItems: 'center',
       marginBottom: 0,
+      //marginTop: -40, // Move logo upward
     },
     logo: {
       width: 250,
       height: 150,
-      resizeMode: 'contain',
-      marginTop:0,
+      bottom:10,
+      //resizeMode: 'contain',
+      // marginTop:20,
+      //marginBottom: 50,
     },
   logoText: {
     color: COLORS.white,
@@ -205,10 +210,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   formContainer: {
-    marginTop: 10,
+    marginBottom: 160,
     backgroundColor: COLORS.white,
     borderRadius: 16,
     borderBlockColor: COLORS.primary,
+    paddingVertical: 20,
     borderWidth: 1,
     width: '100%',
     maxWidth: 400,
@@ -262,7 +268,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   resetButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryDark,
     height: 50,
     borderRadius: 10,
     justifyContent: 'center',
@@ -291,6 +297,18 @@ const styles = StyleSheet.create({
     color: COLORS.textLight,
     fontSize: 15,
     fontWeight: '500',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  formErrorText: {
+    color: '#ff3b30',
+    textAlign: 'center',
+    marginTop: 8,
+    fontWeight: 'bold',
   },
 });
 

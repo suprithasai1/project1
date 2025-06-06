@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { selectTest } from '../redux/slices/brainTestSlice'; // Ensure the path is correct
+import { COLORS } from '../constants/theme';
 
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 48) / 2;
@@ -29,13 +30,15 @@ const styles = StyleSheet.create({
   card: {
     width: cardWidth,
     height: cardWidth,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: 'rgb(237, 237, 245)',
     borderRadius: 12,
+    borderBoarderColor: 'rgb(5, 11, 34)',
     padding: 12,
     margin: 6,
+   
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: 'rgb(0, 0, 0)',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -52,15 +55,15 @@ const styles = StyleSheet.create({
     height: cardWidth * 0.6,
   },
   title: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#333',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.primaryDark,
     marginTop: 8,
     textAlign: 'center',
   },
   description: {
     fontSize: 14,
-    color: '#333',
+    color: 'rgb(120, 116, 180)',
   },
 });
 

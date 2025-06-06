@@ -27,4 +27,5 @@ const styles = StyleSheet.create({
   },
 })
 
-export default AppointmentsScreen
+export default AppointmentsScreen;
+

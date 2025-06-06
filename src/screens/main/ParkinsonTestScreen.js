@@ -9,22 +9,21 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { updateTestResults, setLoading, setError } from '../../redux/slices/parkinsonTestSlice';
+import {  setLoading, setError } from '../../redux/slices/parkinsonTestSlice';
 import { COLORS } from '../../constants/theme';
 import ParkinsonModelService from '../../api/parkinsonModelService';
- 
+
 const ParkinsonTestScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   // Get test results from Redux store
-  const { testResults, isLoading, error } = useSelector((state) => state.parkinsonTest);
- 
+  const {  isLoading, error } = useSelector((state) => state.parkinsonTest);
+
   // Local state for form values
   const [datScanValues, setDatScanValues] = useState({
     caudateR: '',
@@ -32,13 +31,13 @@ const ParkinsonTestScreen = () => {
     putamenR: '',
     putamenL: '',
   });
- 
+
   const [updrsValue, setUpdrsValue] = useState('');
   const [smellTestValue, setSmellTestValue] = useState('');
   const [cognitiveValue, setCognitiveValue] = useState('');
   const [calculatedResults, setCalculatedResults] = useState(null);
   const [predictionResult, setPredictionResult] = useState(null);
- 
+
   // Add inputWarnings state
   const [inputWarnings, setInputWarnings] = useState({
     caudateR: false,
@@ -49,7 +48,7 @@ const ParkinsonTestScreen = () => {
     smell: false,
     cognitive: false,
   });
- 
+
   // Handle file upload (stub)
   const handleUploadReports = async () => {
     try {
@@ -59,7 +58,7 @@ const ParkinsonTestScreen = () => {
       Alert.alert('Error', 'Failed to upload file.');
     }
   };
- 
+
   // Save test results to Redux store (stub)
   const saveTestResults = () => {
     const results = {
@@ -76,7 +75,7 @@ const ParkinsonTestScreen = () => {
     // dispatch(updateTestResults(results));
     // Alert.alert('Success', 'Test results saved successfully');
   };
- 
+
   // Calculate and display results
   const viewTestResults = async () => {
     // Check if all fields are filled
@@ -88,41 +87,40 @@ const ParkinsonTestScreen = () => {
       updrsValue.trim() !== '' &&
       smellTestValue.trim() !== '' &&
       cognitiveValue.trim() !== '';
- 
+
     if (!allFieldsFilled) {
       setCalculatedResults(null);
       Alert.alert('Incomplete', 'Please fill in all test fields to view the result.');
       return;
     }
- 
+
     saveTestResults();
- 
+
     try {
       dispatch(setLoading(true));
-     
+
       // Prepare data for the API request
       const testData = {
         datScan: {
           caudateR: parseFloat(datScanValues.caudateR),
           caudateL: parseFloat(datScanValues.caudateL),
           putamenR: parseFloat(datScanValues.putamenR),
-          putamenL: parseFloat(datScanValues.putamenL)
+          putamenL: parseFloat(datScanValues.putamenL),
         },
         updrs: {
-          npdtot: parseFloat(updrsValue)
+          npdtot: parseFloat(updrsValue),
         },
         smellTest: {
-          upsitPercentage: parseFloat(smellTestValue)
+          upsitPercentage: parseFloat(smellTestValue),
         },
         cognitive: {
-          cogchq: parseFloat(cognitiveValue)
-        }
+          cogchq: parseFloat(cognitiveValue),
+        },
       };
-     
       // Send data to the backend and get prediction
       const result = await ParkinsonModelService.predictRisk(testData);
       setPredictionResult(result);
-     
+
       // Also set calculated results for backward compatibility
       setCalculatedResults({
         datScanSum: ((parseFloat(datScanValues.caudateR) || 0) +
@@ -133,20 +131,17 @@ const ParkinsonTestScreen = () => {
         average: 0,
         percentage: result.riskPercentage
       });
-     
+
       dispatch(setError(null));
     } catch (error) {
       console.error('Error predicting Parkinson\'s risk:', error);
       dispatch(setError('Failed to get prediction from model. Please try again.'));
-      Alert.alert('Error', 'Failed to get prediction from model');
-     
-      // Fallback to local calculation if API fails
+      Alert.alert('Error', 'Failed to get prediction from model')      // Fallback to local calculation if API fails
       const datScanSum =
         (parseFloat(datScanValues.caudateR) || 0) +
-        (parseFloat(datScanValues.caudateL) || 0) +
+      (parseFloat(datScanValues.caudateL) || 0) +
         (parseFloat(datScanValues.putamenR) || 0) +
-        (parseFloat(datScanValues.putamenL) || 0);
- 
+      (parseFloat(datScanValues.putamenL) || 0);
       const totalTests = 4 + 1 + 1 + 1; // 4 DAT Scan + 1 UPDRS + 1 Smell Test + 1 Cognitive
       const totalSum =
         datScanSum +
@@ -154,7 +149,7 @@ const ParkinsonTestScreen = () => {
         (parseFloat(smellTestValue) || 0) +
         (parseFloat(cognitiveValue) || 0);
       const average = totalSum / totalTests;
- 
+
       // Calculate percentage
       const maxPossibleScore = 100; // Assuming 100 is the maximum possible score for each test
       const percentage = (totalSum / (totalTests * maxPossibleScore)) * 100;
@@ -165,15 +160,15 @@ const ParkinsonTestScreen = () => {
         average: average.toFixed(2),
         percentage: percentage.toFixed(2),
       });
-    } finally {
+} finally {
       dispatch(setLoading(false));
     }
   };
- 
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1 }}
+      style={{flex:1 }}
     >
       <ScrollView
         style={styles.container}
@@ -195,7 +190,7 @@ const ParkinsonTestScreen = () => {
             <Text style={styles.uploadButtonText}>Upload Reports</Text>
           </TouchableOpacity>
         </View>
- 
+
         {/* Test Results Form */}
         <View style={styles.formContainer}>
           {/* DAT Scan Test */}
@@ -207,7 +202,7 @@ const ParkinsonTestScreen = () => {
                 <TextInput
                   style={[styles.input, { textAlign: 'center' }]}
                   keyboardType="numeric"
-                  placeholder='0-5.5'
+                  placeholder="0-5.5"
                   placeholderTextColor={'#999'}
                   maxLength={6}
                   value={datScanValues.caudateR}
@@ -269,8 +264,8 @@ const ParkinsonTestScreen = () => {
               <Text style={styles.resultLabel}>Putamen-R</Text>
               <View style={styles.inputWrapper}>
                 <TextInput
-                  style={[styles.input, { textAlign: 'center' }]}
-                  placeholder='0-5.5'
+                  style={[styles.input,{ textAlign:'center' }]}
+                  placeholder="0-5.5"
                   placeholderTextColor={'#999'}
                   maxLength={6}
                   keyboardType="numeric"
@@ -302,7 +297,7 @@ const ParkinsonTestScreen = () => {
               <View style={styles.inputWrapper}>
                 <TextInput
                   style={[styles.input, { textAlign: 'center' }]}
-                  placeholder='0-5.5'
+                  placeholder="0-5.5"
                   placeholderTextColor={'#999'}
                   maxLength={6}
                   keyboardType="numeric"
@@ -478,7 +473,8 @@ const ParkinsonTestScreen = () => {
                 ]}
               >
                 {predictionResult
-                  ? `${predictionResult.riskLevel} Risk: ${predictionResult.riskPercentage}%`
+                  ? `${predictionResult.riskLevel} Risk`
+                  // ${predictionResult.riskPercentage}%
                   : (calculatedResults.percentage >= 20
                     ? 'Positive: Danger Result'
                     : 'Negative: Safe Result')}
@@ -552,13 +548,13 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   detailLabel: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 16,
+    color: 'rgb(35, 39, 53)',
     fontWeight: '500',
   },
   detailValue: {
-    fontSize: 14,
-    color: '#333',
+    fontSize: 16,
+    color: 'rgb(35, 30, 94)',
     fontWeight: '600',
   },
   scrollContainer: {
@@ -623,9 +619,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#5856D6',
+    color: COLORS.primaryDark,
     marginBottom: 8,
   },
   resultRow: {
@@ -636,19 +632,19 @@ const styles = StyleSheet.create({
   },
   resultLabel: {
     flex: 1,
-    fontSize: 14,
-    color: 'rgb(77, 79, 95)',
+    fontSize: 16,
+    color: 'rgb(35, 39, 53)',
     fontWeight: '600',
   },
   input: {
     width: 120,
-    height: 40,
-    borderWidth: 1.2,
-    borderColor: 'rgb(156, 151, 199)',
+    height: 44,
+    borderWidth: 1.5,
+    borderColor: 'rgb(181, 181, 209)',
     paddingHorizontal: 12,
     borderRadius: 8,
     textAlign: 'center',
-    color: '#333333',
+    color: COLORS.primaryDark,
     backgroundColor: '#FAFAFA',
     fontSize: 16,
     fontWeight: '500',
@@ -702,7 +698,8 @@ const styles = StyleSheet.create({
   },
   resultCardText: {
     fontSize: 16,
-    color: '#333333',
+    fontWeight:'bold',
+    color: COLORS.primaryDark,
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -735,13 +732,13 @@ const styles = StyleSheet.create({
   precautionsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'rgb(18, 89, 196)',
+    color: COLORS.primaryDark,
     marginBottom: 8,
   },
   precautionsText: {
     fontSize: 16,
-    fontWeight: '400',
-    color: 'rgb(40, 61, 92)',
+    fontWeight: '500',
+    color: 'rgb(35, 39, 53)',
     marginBottom: 4,
   },
 });

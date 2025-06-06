@@ -84,7 +84,7 @@ const OnboardingScreen = ({ navigation }) => {
         <Image source={item.image} style={styles.image}
         //resizeMode="contain
          />
-        <Text style={styles.title} color={COLORS.primary}>{item.title}</Text>
+        <Text style={styles.title} color={COLORS.primaryDark}>{item.title}</Text>
         <Text style={styles.description} color={COLORS.primary}>{item.description}</Text>
       </View>
     );
@@ -144,7 +144,7 @@ const OnboardingScreen = ({ navigation }) => {
             key={index}
             style={[
               styles.paginationDot,
-              { backgroundColor: index === currentIndex ? COLORS.primary : COLORS.muted },
+              { backgroundColor: index === currentIndex ? COLORS.primaryDark : COLORS.muted },
             ]}
           />
         ))}
@@ -212,8 +212,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    ...FONTS.h2,
-    color: COLORS.primary,
+    ...FONTS.h1,
+    color: COLORS.primaryDark,
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryDark,
     borderRadius: 12,
     height: 50,
     justifyContent: 'center',

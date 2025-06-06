@@ -186,7 +186,7 @@ const PatientListScreen = () => {
           <Text style={[styles.columnHeader, styles.serialColumn]}>S.no</Text>
           <Text style={[styles.columnHeader, styles.nameColumn]}>Patient Name</Text>
           <Text style={[styles.columnHeader, styles.ageColumn]}>Age/Sex</Text>
-          <Text style={[styles.columnHeader, styles.dateColumn]}>Last visit date</Text>
+          <Text style={[styles.columnHeader, styles.dateColumn]}>Last visit</Text>
           <Text style={[styles.columnHeader, styles.statusColumn]}>Status</Text>
         </View>
 
@@ -239,7 +239,14 @@ const PatientListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F6FA',
+    backgroundColor: ' #F5F6FA',
+  },
+  cell: {
+    fontSize: 14,
+    fontFamily: 'sans-serif',
+    fontWeight: 'bold',
+   
+    color: 'rgb(100, 100, 102)',
   },
   navigationBar: {
     flexDirection: 'row',
@@ -331,7 +338,7 @@ const styles = StyleSheet.create({
   formContainer: {
     backgroundColor: '#fff',
     borderRadius: 10,
-    margin: 12,
+    margin: 10,
     paddingBottom: 8,
     elevation: 2,
     shadowColor: '#000',
@@ -341,32 +348,37 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: 'rgb(239, 239, 252)',
+    backgroundColor: 'rgb(239, 239, 255)',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    paddingVertical: 10,
+    paddingVertical: 16,
     paddingHorizontal: 4,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: 'rgb(173, 167, 255)',
   },
   columnHeader: {
     fontWeight: 'bold',
-    color: '#5856D6',
+    color: 'rgb(35, 32, 207)',
     fontSize: 15,
     textAlign: 'center',
   },
   serialColumn: {
-    flex: 0.7,
+    flex: 0.9,
     textAlign: 'center',
+  
   },
   nameColumn: {
-    flex: 2.2,
+    flex: 2.0,
     textAlign: 'left',
     paddingLeft: 6,
+    
   },
   ageColumn: {
     flex: 1.1,
     textAlign: 'center',
+    
+    //paddingLeft: 14,
+    //paddingRight: 10,
   },
   dateColumn: {
     flex: 1.5,
@@ -375,6 +387,7 @@ const styles = StyleSheet.create({
   statusColumn: {
     flex: 1,
     textAlign: 'center',
+   
   },
   valueContainer: {
     backgroundColor: '#fff',
@@ -385,6 +398,12 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   patientItem: {
+    flex: 1,
+    fontFamily: 'sans-serif',
+    fontSize: 14,
+    // fontWeight: '400',
+    fontStyle:'bold',
+    color: '#333',
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,

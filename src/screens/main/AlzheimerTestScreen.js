@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { setRiskPercentage, setLoading, setError } from '../../redux/slices/alzheimerSlice';
 import AlzheimerModelService from '../../api/alzheimerModelService';
+import { COLORS } from '../../constants/theme';
 
 const ranges = {
   hippocampusVolume: { min: 2.5, max: 4.5, placeholder: '2.5 - 4.5', label: 'Hippocampus Volume (cm³)' },
@@ -206,8 +207,68 @@ const AlzheimerTestScreen = ({ navigation }) => {
           <Text style={styles.actionButtonText}>Calculate Risk</Text>
         </TouchableOpacity>
 
-        {/* Results Section ... (unchanged) */}
-        {/* ...existing result rendering code... */}
+        {/* Results Section */}
+        {predictionResult && (
+          <>
+            <View
+              style={[styles.resultCard, {
+                borderColor: predictionResult.riskPercentage >= 50 ? '#ff4d4f' : '#52c41a',
+                backgroundColor: predictionResult.riskPercentage >= 50 ? '#fff1f0' : '#f6ffed',
+              }]}
+            >
+              <Text
+                style={[
+                  styles.resultCardTitle,
+                  {
+                    color: predictionResult.riskPercentage >= 50 ? '#ff4d4f' : '#52c41a',
+                  },
+                ]}
+              >
+                {predictionResult.riskPercentage >= 50
+                  ? 'High Risk'
+                  : 'Low Risk'}
+              </Text>
+              <Text style={styles.resultCardText}>
+                Risk Percentage: {Number(predictionResult.riskPercentage).toFixed(2)}%
+              </Text>
+              {typeof predictionResult.confidence !== "undefined" && (
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Confidence:</Text>
+                  <Text style={styles.detailValue}>
+                    {(predictionResult.confidence * 100).toFixed(0)}%
+                  </Text>
+                </View>
+              )}
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>Assessment Date:</Text>
+                <Text style={styles.detailValue}>
+                  {new Date().toLocaleDateString()}
+                </Text>
+              </View>
+            </View>
+            
+            {predictionResult.riskPercentage < 50 ? (
+              <View style={styles.safeContainer}>
+                <Text style={styles.safeText}>
+                  The patient is safe. No immediate action is required.
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.precautionsCard}>
+                <Text style={styles.precautionsTitle}>Precautions:</Text>
+                <Text style={styles.precautionsText}>
+                  - Consult a neurologist immediately.
+                </Text>
+                <Text style={styles.precautionsText}>
+                  - Follow a healthy diet and exercise regularly.
+                </Text>
+                <Text style={styles.precautionsText}>
+                  - Avoid stress and maintain a positive mindset.
+                </Text>
+              </View>
+            )}
+          </>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -257,7 +318,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   formContainer: {
-    padding: 10,
+    padding: 16,
+    paddingVertical: 20,
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
     margin: 2,
@@ -272,10 +334,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#5856D6',
-    marginBottom: 8,
+    color: COLORS.primaryDark,
+    marginBottom: 20,
   },
   resultRow: {
     flexDirection: 'row',
@@ -285,19 +347,19 @@ const styles = StyleSheet.create({
   },
   resultLabel: {
     flex: 1,
-    fontSize: 14,
-    color: 'rgb(77, 79, 95)',
+    fontSize: 16,
+    color: 'rgb(35, 39, 53)',
     fontWeight: '600',
   },
   input: {
     width: 120,
-    height: 40,
-    borderWidth: 1.2,
-    borderColor: 'rgb(156, 151, 199)',
+    height: 44,
+    borderWidth: 1.5,
+    borderColor: 'rgb(181, 181, 209)',
     paddingHorizontal: 12,
     borderRadius: 8,
     textAlign: 'center',
-    color: '#5856D6', // Parkinson's blue for input text
+    color: COLORS.primaryDark,
     backgroundColor: '#FAFAFA',
     fontSize: 16,
     fontWeight: '500',
@@ -322,16 +384,17 @@ const styles = StyleSheet.create({
   actionButton: {
     backgroundColor: '#5856D6',
     borderRadius: 25,
-    paddingVertical: 12,
+    paddingVertical: 16,
     paddingHorizontal: 24,
     alignItems: 'center',
     margin: 16,
-    marginTop: 8,
+    marginTop: 24,
   },
   actionButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+    textAlign: 'center',
   },
   resultCard: {
     backgroundColor: '#FFFFFF',
@@ -353,11 +416,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   resultCardText: {
-    fontSize: 16,
-    color: '#333333',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
+      fontSize: 16,
+      fontWeight:'bold',
+      color: COLORS.primaryDark,
+      marginBottom: 8,
+      textAlign: 'center',
+    },
   safeContainer: {
     marginTop: 16,
     padding: 8,
@@ -370,7 +434,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'green',
   },
-  precautionsCard: {
+   precautionsCard: {
     backgroundColor: '#ffffff',
     borderRadius: 10,
     borderWidth: 1.5,
@@ -385,16 +449,32 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   precautionsTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: 'rgb(18, 89, 196)',
+    color: COLORS.primaryDark,  
     marginBottom: 8,
   },
   precautionsText: {
     fontSize: 16,
-    fontWeight: '400',
-    color: 'rgb(40, 61, 92)',
+    fontWeight: '600',
+    color: 'rgb(39, 42, 53)',
     marginBottom: 4,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  detailLabel: {
+    fontSize: 14,
+    color: 'rgb(35, 39, 53)',
+    fontWeight: '500',
+  },
+  detailValue: {
+    fontSize: 14,
+    color: 'rgb(50, 50, 50)',
+    fontWeight: '600',
   },
 });
 

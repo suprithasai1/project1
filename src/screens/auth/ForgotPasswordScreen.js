@@ -1,7 +1,7 @@
 "use client"
 
 // Screen for entering email to start password reset
-import React, { useState } from "react"
+import React, { useState } from 'react'
 import {
   StyleSheet,
   View,
@@ -13,32 +13,32 @@ import {
   Platform,
   Dimensions,
   SafeAreaView,
-} from "react-native"
-import Ionicons from "react-native-vector-icons/Ionicons"
-import { useNavigation } from "@react-navigation/native"
-import sendOTPEmail from "../../sevices/sendOTPEmail"
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import sendOTPEmail from '../../sevices/sendOTPEmail';
 
-const STATIC_EMAIL = "konduru075@gmail.com"
-const STATIC_OTP = "123456"
-const { width, height } = Dimensions.get("window")
+const STATIC_EMAIL = 'devikandulapati@gmail.com';
+const STATIC_OTP = '123456';
+const { width, height } = Dimensions.get('window');
 
 const ForgotPasswordScreen = () => {
-  const navigation = useNavigation()
-  const [isLoading, setIsLoading] = useState(false)
+  const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleNext = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       // Send OTP to email using EmailJS
-      sendOTPEmail(STATIC_EMAIL, STATIC_OTP)
+      sendOTPEmail(STATIC_EMAIL, STATIC_OTP);
       // Optionally, you can wait for the promise to resolve before navigating
       setTimeout(() => {
         setIsLoading(false)
-        navigation.navigate("VerificationScreen", { email: STATIC_EMAIL, otp: STATIC_OTP })
+        navigation.navigate("OtpVerificationScreen", { email: STATIC_EMAIL, otp: STATIC_OTP });
       }, 1000)
     } catch (error) {
-      setIsLoading(false)
-      Alert.alert("Error", error.message || "Failed to send OTP")
+      setIsLoading(false);
+      Alert.alert("Error", error.message || 'Failed to send OTP');
     }
   }
 
